@@ -1,0 +1,72 @@
+import os
+import random
+def gra(haslo,proby):
+    litery = []
+    tablica = list(haslo)
+    os.system('cls')
+    for i in range(len(haslo)):
+        tablica[i] = '_'
+    while (int(proby) > 0):
+        print("Pozzostaly Ci ", proby, "proby||||Użyłeś juz ",litery)
+        for y in range(len(haslo)):
+            if haslo[y] == ' ':
+                print(" ", end='')
+                tablica[y] = ' '
+            else:
+                print(tablica[y], end=' ')
+        litera = input("\n""Podaj litere :  ")
+        if litera in litery:
+            print("podales juz taka")
+        if litera in haslo:
+            for i in range(len(haslo)):
+                if (haslo[i] == litera):
+                    tablica[i] = litera
+        else:
+            print("Nie ma takiej litery")
+            if litera not in litery:
+                proby -= 1
+                litery.append(litera)
+        if "_" not in tablica:
+            print("Brawo wygrałes")
+            print("Hasło to ", haslo)
+            input("ENTER zakoncz gre")
+            break
+
+        if proby ==0:
+            print("Hasło to było",haslo)
+        os.system('cls')
+
+
+print("----WISIELEC----")
+print("Wybierz tryb gry\n 1.Losowe haslo\n2.Sam podam haslo i proby \n")
+tryb = input()
+os.system('cls')
+if tryb == '2':
+    haslo = input("Podaj hasło\n")
+    proby = int(input("Podaj ilosc prob\n"))
+    gra(haslo,proby)
+elif tryb == '1':
+    zwierzeta = ['krowa','kon','kaczka','lis','swinka morska','kuropatwa']
+    slawne_osoby = ['mariusz pudzianowski','maryla rodowicz','andrzej duda','robert de niro','jacky chan']
+    przedmioty_szkolne = ['matematyka','historia','jezyk polski','wychowanie fizyczne','biologia']
+    print("Podaj kategorie\n1.zwierzeta\n2.slawne osoby\n3.przedmioty szkolne\n")
+    kate = input()
+    if kate == '1':
+        kategoria = zwierzeta
+    elif kate == '2':
+        kategoria = slawne_osoby
+    elif kate == '3':
+        kategoria = przedmioty_szkolne
+    os.system('cls')
+    haslo = str(kategoria[random.randint(0,len(kategoria)-1)])
+    print("Wybierz poziom trudnosci\n1.Latwy\n2.Sredni\n3.Trudny")
+    poziom = input()
+    if poziom == '1':
+        x = 5
+        gra(haslo,x)
+
+    elif poziom == '2':
+        gra(haslo,4)
+
+    elif poziom =='3':
+        gra(haslo,3)
