@@ -1,0 +1,94 @@
+import pyttsx3
+import speech_recognition as sr
+import datetime
+import wikipedia
+import os
+import pyowm
+import ctypes
+import pyjokes
+
+print("Witam nazywam się Ola")
+MASTER = 'Łukasz'
+engine = pyttsx3.init('sapi5')
+voices = engine.getProperty('voices')
+engine.setProperty('voices',voices[0].id)
+newVoiceRate = 135
+engine.setProperty('rate', newVoiceRate)
+#engine.setProperty('voice', voices[1].id)
+#funkcja mowy
+def speak(text):
+    engine.say(text)
+    engine.runAndWait()
+#komendy ktore wykona jarvis
+def command():
+    r = sr.Recognizer()
+    with sr.Microphone() as source:
+        print("Słucham...")
+        audio = r.listen(source)
+    try:
+        print("Analizuje...")
+        query = r.recognize_google(audio, language = 'pl-PL')
+        print(f"user said: {query}\n")
+    except Exception as e:
+        print('Nie rozumiem')
+        query = None
+    return query
+def zadanie(query):
+    if 'wikipedia' in query.lower():
+        speak('searches wikipedia')
+        query = query.replace("wikipedia", "")
+        results = wikipedia.summary(query, sentences=2)
+        print(results)
+        speak(results)
+    elif 'godzina' in query.lower():
+        strTime = datetime.datetime.now().hour
+        speak(strTime)
+    elif 'otwórz google' in query.lower():
+        codePath = r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
+        os.startfile(codePath)
+    elif 'uśpij komputer' in query.lower():
+        speak("Usypiam komputer, do usłyszenia")
+        ctypes.windll.user32.LockWorkStation()
+    elif 'otwórz cs go' in query.lower():
+        codePath = r"C:\Users\Lukar\OneDrive\Pulpit\Counter-Strike Global Offensive"
+        os.startfile(codePath)
+    elif 'kto cię stworzył' in query.lower():
+        speak("Zostałam zaprogramowana przez łukasza")
+    elif "pogoda" in query.lower():
+        while (1):
+            try:
+                owm = pyowm.OWM('c17e34503b50a20cb2ccef7213239d58', language="pl")
+                speak("W jakim mieście ?")
+                place = command()
+                observation = owm.weather_at_place(place)
+                w = observation.get_weather()
+                temp = w.get_temperature('celsius')["temp_max"]
+                speak("W" + place + " Jest" + str(temp) + 'stopni' + w.get_detailed_status())
+                if temp < 10:
+                    speak("Lepiej cos na siebie załóż")
+                elif temp < 20:
+                    speak("Na polu jest przyjemnie idealnie by ubrać bluze")
+                else:
+                    speak("Kurtke zostaw w domu")
+                break
+            except Exception:
+                speak("Czy możesz powtórzyć, nie zrozumiałam lub nie znalazłam miasta")
+                continue
+
+    elif 'kawał' in query.lower():
+        speak(pyjokes.get_joke())
+    else:
+        speak("nie rozumiem")
+#...wiele innych
+while(1):
+    speak("Słucham Panie"+MASTER + 'u')
+    query = command()
+    zadanie(query)
+    speak("...Czy chcesz mnie o coś jeszczę zapytać??")
+    command()
+    if 'tak' in query.lower():
+        continue
+    else:
+        break
+
+
